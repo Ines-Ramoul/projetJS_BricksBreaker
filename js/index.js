@@ -310,7 +310,7 @@ function drawAll() {
 
   var mouseBrickCol = Math.floor(mouseX / BRICK_WIDTH);
   var mouseBrickRow = Math.floor(mouseY / BRICK_HEIGHT);
-  var brickIndexUnderMouse = rowColToArrayIndex(mouseBrickCol, mouseBrickRow);
+  
 
   text("Score: " + joueurScore, 10, 30, 'white', 'bold 1.4em monospace', 'left');
   text("Niveau: " + level, 320, 30, 'white', 'bold 1.4em monospace', 'left');
