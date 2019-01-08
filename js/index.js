@@ -1,5 +1,5 @@
 var canvas, canvasContext;
-
+var level = 0;
 //ball variables
 var ballX = 400;
 var ballSpeedX = 0;
@@ -34,6 +34,7 @@ var joueurScore = 0;
 var attempts = 5;
 var joueurAttempts = attempts;
 var showEndingScreen = false;
+var showStartingScreen = true; 
 
 function updateMousePosition(evt) {
   var rect = canvas.getBoundingClientRect();
@@ -54,12 +55,14 @@ function handleMouseClick(evt) {
     joueurAttempts = attempts;
     brickReset();
     ballReset();
+    level = level + 1;
     showEndingScreen = false;
   }
 
   if(ballSpeedX == 0 && ballSpeedY == 0) {
     ballSpeedX = 0;
     ballSpeedY = -5;
+    showStartingScreen=false;
   }
 }
 
@@ -271,14 +274,28 @@ function drawAll() {
     if(joueurScore == maximumScore) {
       text("VOUS AVEZ GAGNE!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
       text("SCORE: " + joueurScore, canvas.width/2, 250, 'white', 'bold 2em Arial', 'center');
-      text("ATTEMPTS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
+      text("ESSAIS RESTANTS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
+      text("NIVEAU SUIVANT: " + (level + 1),canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
       text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
     } else {
       text("VOUS AVEZ PERDU!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
       text("SCORE: " + joueurScore, canvas.width/2, 250, 'white', 'bold 2em Arial', 'center');
-      text("ATTEMPTS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
-      text("Cliquez pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
+      text("ESSAIS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
+      text("NIVEAU : " + level ,canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
+      text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
     }
+    return;
+  }
+
+
+  if (showStartingScreen){
+    text("Cliquez pour commencer.", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
+    text("Utilisez la souris pour bouger la barre", canvas.width/2, 150, 'blue', 'bold 1.5em Arial', 'center');
+    text("Si toutes les briques ont été détruites,", canvas.width/2, 200, 'blue', 'bold 1.5em Arial', 'center');
+    text("laissez la balle toucher la barre pour terminer la partie.", canvas.width/2, 250, 'blue', 'bold 1.5em Arial', 'center');
+    text("Pour faire une pause appuyez sur la touche espace.", canvas.width/2, 300, 'blue', 'bold 1.5em Arial', 'center');
+    text("BONNE CHANCE !!!", canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
+ 
     return;
   }
 
@@ -296,7 +313,8 @@ function drawAll() {
   var brickIndexUnderMouse = rowColToArrayIndex(mouseBrickCol, mouseBrickRow);
 
   text("Score: " + joueurScore, 10, 30, 'white', 'bold 1.4em monospace', 'left');
-  text("Attempts: " + joueurAttempts, 673, 30, 'white', 'bold 1.4em monospace', 'left');
+  text("Niveau: " + level, 320, 30, 'white', 'bold 1.4em monospace', 'left');
+  text("Essais: " + joueurAttempts, 673, 30, 'white', 'bold 1.4em monospace', 'left');
 }
 
 function rect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
