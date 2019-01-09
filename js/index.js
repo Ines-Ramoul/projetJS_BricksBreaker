@@ -1,5 +1,5 @@
 var canvas, canvasContext;
-var level = 0;
+var level = 1;
 //ball variables
 var ballX = 400;
 var ballSpeedX = 0;
@@ -7,10 +7,11 @@ var ballY = 530;
 var ballSpeedY = 0;
 
 //bar variables and constants
-const BAR_WIDTH = 100;
+var BAR_WIDTH = 100;
 const BAR_HEIGHT = 10;
 const BAR_DIST_FROM_EDGE = 60;
 var barX = 350;
+
 
 //mouse variables;
 var mouseX;
@@ -29,6 +30,7 @@ var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 var bricksLeft = 0;
 
 //score variables
+var highestScore = 0;
 var maximumScore = 0;
 var joueurScore = 0;
 var attempts = 5;
@@ -50,6 +52,9 @@ function updateMousePosition(evt) {
 
 function handleMouseClick(evt) {
   if(showEndingScreen) {
+    if (maximumScore>highestScore){
+      highestScore = maximumScore;
+    }
     joueurScore = 0;
     maximumScore = 0;
     joueurAttempts = attempts;
@@ -145,6 +150,7 @@ function ballBrickCollision() {
       console.log(bricksLeft);
       joueurScore += 10;
       console.log(joueurScore);
+     // console.log("meilleur score :" +highestScore)
 
       var previousBallX = ballX - ballSpeedX;
       var previousBallY = ballY - ballSpeedY;
@@ -232,6 +238,7 @@ function brickReset() {
     }//fin du else (random check)
   }//fin du for
   console.log(maximumScore);
+  console.log("meilleur score :" + highestScore);
 }//fin du brickReset
 
 function rowColToArrayIndex(col, row) {
@@ -244,7 +251,7 @@ function drawBricks() {
       var arrayIndex = rowColToArrayIndex(eachCol, eachRow);
 
       if(brickGrid[arrayIndex]) {
-        rect((BRICK_WIDTH*eachCol), BRICK_HEIGHT*eachRow, BRICK_WIDTH-BRICK_GAP, BRICK_HEIGHT-BRICK_GAP, 'blue');
+        rect((BRICK_WIDTH*eachCol), BRICK_HEIGHT*eachRow, BRICK_WIDTH-BRICK_GAP, BRICK_HEIGHT-BRICK_GAP, 'orange');
       }//fin du brick drawing if true
     }
   }//fin du brick for
@@ -269,11 +276,18 @@ function togglePause() {
 function drawAll() {
   //background
   rect(0, 0, canvas.width, canvas.height, 'black');
-
-  if(showEndingScreen) {
-    if(joueurScore == maximumScore) {
+  BAR_WIDTH=100;
+  if(showEndingScreen && level != 10 ) {
+    
+    if(joueurScore == maximumScore ) {
+      if(maximumScore>highestScore){
+        highestScore = maximumScore;
+        
+        return;
+      }
       text("VOUS AVEZ GAGNE!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
-      text("SCORE: " + joueurScore, canvas.width/2, 250, 'white', 'bold 2em Arial', 'center');
+      text("SCORE DE LA PARTIE: " + joueurScore, canvas.width/2, 200, 'white', 'bold 2em Arial', 'center');
+      text("MEILLEUR SCORE :"+ highestScore, canvas.width/2, 300, 'red', 'bold 2em Arial', 'center');
       text("ESSAIS RESTANTS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
       text("NIVEAU SUIVANT: " + (level + 1),canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
       text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
@@ -299,6 +313,50 @@ function drawAll() {
     return;
   }
 
+  if (joueurScore==0){ 
+    showEndingScreen = true;
+    joueurScore = maximumScore;
+  }
+
+
+  if (level == 2 || level == 4){
+    BAR_WIDTH=BAR_WIDTH-30;
+  }
+
+if (level == 5 || level == 7){
+    BAR_WIDTH=BAR_WIDTH-50;
+  }
+
+  if (level == 9){
+    BAR_WIDTH=BAR_WIDTH-70;
+  }
+  if (level == 10){
+    for(n=1;n<8;n++){
+      if(joueurScore == 10*2* n){ 
+        //if(BAR_WIDTH>= 50)
+        BAR_WIDTH = BAR_WIDTH - 70 ;
+      }
+    }
+    if(showEndingScreen){
+      if(joueurScore==maximumScore){
+        rect(0, 0, canvas.width, canvas.height, 'black');
+        text("Félicitations Brick Breaker !!! vous venez de terminer ", canvas.width/2, 200, 'green', 'bold 1.7em Arial', 'center');
+        text("le jeu avec un score de :" + joueurScore, canvas.width/2,250, 'green', 'bold 1.8em Arial', 'center');
+        level = 1;
+        BAR_WIDTH = 100;
+        highestScore = 0;
+        return;
+      }
+    }
+  }
+  if (level == 3 || level == 8){ 
+  for(n=1;n<8;n++){
+    if(joueurScore == 10*2* n){ 
+      //if(BAR_WIDTH>= 50)
+      BAR_WIDTH = BAR_WIDTH - 50 ;
+    }
+  }}
+
   //ball
   circle(ballX, ballY, 10, 'white');
 
@@ -308,12 +366,9 @@ function drawAll() {
   //bricks
   drawBricks();
 
-  var mouseBrickCol = Math.floor(mouseX / BRICK_WIDTH);
-  var mouseBrickRow = Math.floor(mouseY / BRICK_HEIGHT);
-  
-
   text("Score: " + joueurScore, 10, 30, 'white', 'bold 1.4em monospace', 'left');
-  text("Niveau: " + level, 320, 30, 'white', 'bold 1.4em monospace', 'left');
+  text("Niveau: " + level, 200, 30, 'white', 'bold 1.4em monospace', 'left');
+  text("Meilleur Score: " + highestScore, 360, 30, 'white', 'bold 1.4em monospace', 'left');  
   text("Essais: " + joueurAttempts, 673, 30, 'white', 'bold 1.4em monospace', 'left');
 }
 
