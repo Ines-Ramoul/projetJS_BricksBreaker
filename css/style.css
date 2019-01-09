@@ -4,16 +4,14 @@ body {
   justify-content: center;
   text-align: center;
   font-family: monospace;
-  background-color: #DDD;
+  background-color: #DDD; 
 }
 
-p {
-  font-size: 1.5em;
-  font-weight: bold;
-  width: 600px;
-  margin: auto;
-  margin-bottom: 20px;
+body {
+  font: 14pt Arial, Helvetica, sans-serif;
+background: url(../images/paving.jpg);
 }
+
 
 #gameCanvas {
   margin: auto;
