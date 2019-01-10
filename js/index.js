@@ -338,7 +338,7 @@ function drawAll() {
     return;
   }
 
-  if (joueurScore==0){ 
+  if (joueurScore==maximumScore){ 
     joueurScore = maximumScore;
     showEndingScreen = true;
     
