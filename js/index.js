@@ -24,7 +24,7 @@ var paused = false;
 const BRICK_WIDTH = 80;
 const BRICK_HEIGHT = 20;
 const BRICK_COLS = 10;
-const BRICK_GAP = 2;
+const BRICK_GAP = 4;
 const BRICK_ROWS = 17;
 var brickGrid = new Array(BRICK_COLS * BRICK_ROWS);
 var bricksLeft = 0;
@@ -35,6 +35,7 @@ var maximumScore = 0;
 var joueurScore = 0;
 var attempts = 5;
 var joueurAttempts = attempts;
+var gameLost=0;
 var showEndingScreen = false;
 var showStartingScreen = true; 
 
@@ -52,15 +53,21 @@ function updateMousePosition(evt) {
 
 function handleMouseClick(evt) {
   if(showEndingScreen) {
-    if (maximumScore>highestScore){
+     if (joueurScore == maximumScore && maximumScore>highestScore){
       highestScore = maximumScore;
+    } else { if (joueurScore >= highestScore){
+      highestScore=joueurScore;
+    } 
+     
     }
+    if (joueurScore==maximumScore){
+      level = level + 1;
+    } else { gameLost++;}
     joueurScore = 0;
     maximumScore = 0;
     joueurAttempts = attempts;
     brickReset();
     ballReset();
-    level = level + 1;
     showEndingScreen = false;
   }
 
@@ -285,18 +292,24 @@ function drawAll() {
         return;
       }
       text("VOUS AVEZ GAGNE!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
-      text("SCORE DE LA PARTIE: " + joueurScore, canvas.width/2, 200, 'white', 'bold 2em Arial', 'center');
-      text("MEILLEUR SCORE :"+ highestScore, canvas.width/2, 300, 'red', 'bold 2em Arial', 'center');
-      text("ESSAIS RESTANTS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
-      text("NIVEAU SUIVANT: " + (level + 1),canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
+      text("SCORE DE LA PARTIE: " + joueurScore, canvas.width/2, 170, 'white', 'bold 2em Arial', 'center');
+      text("MEILLEUR SCORE :"+ highestScore, canvas.width/2, 230, 'red', 'bold 2em Arial', 'center');
+      text("ESSAIS RESTANTS: " + joueurAttempts, canvas.width/2, 300, 'white', 'bold 2em Arial', 'center');
+      text("NIVEAU SUIVANT: " + (level + 1),canvas.width/2, 370, 'white', 'bold 2em Arial', 'center');
+      text("PARTIES PERDUES : " + gameLost ,canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
       text("ATTENTION: La taille de la barre va changer !" ,canvas.width/2, 500, 'red', 'bold 1em Arial', 'center');
       text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
     } else {
+      if (joueurScore>=highestScore) {
+      highestScore = joueurScore;
+      return;
+      }
       text("VOUS AVEZ PERDU!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
-      text("SCORE: " + joueurScore, canvas.width/2, 250, 'white', 'bold 2em Arial', 'center');
-      text("ESSAIS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
-      text("NIVEAU : " + level ,canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
-      text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
+      text("SCORE DE LA PARTIE : " + joueurScore, canvas.width/2, 170, 'white', 'bold 2em Arial', 'center');
+      text("MEILLEUR SCORE : "+ highestScore, canvas.width/2, 260, 'red', 'bold 2em Arial', 'center');
+      text("NIVEAU : " + level ,canvas.width/2, 350, 'white', 'bold 2em Arial', 'center');
+      text("PARTIES PERDUES : " + (gameLost+1) ,canvas.width/2, 440, 'white', 'bold 2em Arial', 'center');
+      text("Cliquer pour continuer", canvas.width/2, 550, 'green', 'bold 1.5em Arial', 'center');
     }
     return;
   }
@@ -305,10 +318,10 @@ function drawAll() {
     
     if(joueurScore != maximumScore ) {
       text("VOUS AVEZ PERDU!", canvas.width/2, 100, 'white', 'bold 3em Arial', 'center');
-      text("SCORE: " + joueurScore, canvas.width/2, 250, 'white', 'bold 2em Arial', 'center');
-      text("ESSAIS: " + joueurAttempts, canvas.width/2, 400, 'white', 'bold 2em Arial', 'center');
-      text("NIVEAU : " + level ,canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
-      text("Cliquer pour continuer", canvas.width/2, 550, 'white', 'bold 1.5em Arial', 'center');
+      text("SCORE: " + joueurScore, canvas.width/2, 200, 'white', 'bold 2em Arial', 'center');
+      text("NIVEAU : " + level ,canvas.width/2, 350, 'white', 'bold 2em Arial', 'center');
+      text("PARTIES PERDUES : " + gameLost ,canvas.width/2, 450, 'white', 'bold 2em Arial', 'center');
+      text("Cliquer pour continuer", canvas.width/2, 550, 'green', 'bold 1.5em Arial', 'center');
     return;
   }
 }
@@ -325,9 +338,10 @@ function drawAll() {
     return;
   }
 
-  if (joueurScore==50){ 
-    showEndingScreen = true;
+  if (joueurScore==0){ 
     joueurScore = maximumScore;
+    showEndingScreen = true;
+    
   }
 
 
@@ -361,9 +375,9 @@ if (level == 5 || level == 7){
       if(joueurScore==maximumScore){
         rect(0, 0, canvas.width, canvas.height, 'black');
         text("Félicitations Brick Breaker !!! ", canvas.width/2, 100, 'green', 'bold 2em Arial', 'center');
-        text("Vous venez de terminer ", canvas.width/2, 200, 'green', 'bold 1.7em Arial', 'center');
-        text("le jeu avec un score de: " + joueurScore, canvas.width/2,250, 'green', 'bold 1.8em Arial', 'center');
-        text("Cliquez pour recommencer du niveau 1" , canvas.width/2,400, 'white', 'bold 1.8em Arial', 'center');
+        text("Vous venez de terminer le jeu, ", canvas.width/2, 200, 'green', 'bold 1.7em Arial', 'center');
+        text("votre meilleur score est de: " + highestScore, canvas.width/2,250, 'green', 'bold 1.8em Arial', 'center');
+        text("Cliquez pour recommencer à jouer" , canvas.width/2,400, 'white', 'bold 1.8em Arial', 'center');
         return;
         
         
